@@ -1,715 +1,803 @@
-import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  Briefcase, 
-  ChevronRight, 
-  Globe, 
-  ShieldCheck, 
-  TrendingUp, 
-  CheckCircle2,
-  Mail,
-  Download,
-  TerminalSquare,
-  Network,
-  Cpu,
-  BarChart,
-  Target,
-  ArrowRight,
-  ArrowUp
-} from 'lucide-react';
-
-// 统一的主题配置
-const theme = {
-  primary: '#1a2356',
-  accent: '#0088ff',
-  yellow: '#f5b225',
-  bg: '#eef2f6',
-  surface: '#ffffff'
-};
-
-// 打字机组件
-const Typewriter = ({ texts }) => {
-  const [currentText, setCurrentText] = useState('');
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [isDeleting, setIsDeleting] = useState(false);
-  const [blink, setBlink] = useState(true);
-
-  useEffect(() => {
-    const blinkInterval = setInterval(() => setBlink(b => !b), 500);
-    return () => clearInterval(blinkInterval);
-  }, []);
-
-  useEffect(() => {
-    const text = texts[currentIndex];
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>伽允智能个人主页 | 销售工程师</title>
     
-    let timer;
-    if (isDeleting) {
-      if (currentText === '') {
-        setIsDeleting(false);
-        setCurrentIndex((prev) => (prev + 1) % texts.length);
-      } else {
-        timer = setTimeout(() => {
-          setCurrentText(currentText.slice(0, -1));
-        }, 75);
-      }
-    } else {
-      if (currentText === text) {
-        timer = setTimeout(() => setIsDeleting(true), 2000);
-      } else {
-        timer = setTimeout(() => {
-          setCurrentText(text.slice(0, currentText.length + 1));
-        }, 150);
-      }
-    }
+    <!-- Tailwind CSS (样式库) -->
+    <script src="https://cdn.tailwindcss.com"></script>
     
-    return () => clearTimeout(timer);
-  }, [currentText, isDeleting, currentIndex, texts]);
+    <!-- React & ReactDOM (核心引擎) -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    
+    <!-- Framer Motion (动画库) -->
+    <script src="https://unpkg.com/framer-motion@10.16.4/dist/framer-motion.js"></script>
+    
+    <!-- Babel (让浏览器直接理解 JSX 的编译器) -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
-  return (
-    <span className="inline-flex items-center">
-      <span className="bg-[#1a2356] text-white px-4 py-1 leading-snug md:leading-normal">{currentText}</span>
-      <span className={`inline-block w-1 h-12 md:h-14 bg-white ml-1 ${blink ? 'opacity-100' : 'opacity-0'}`} />
-    </span>
-  );
-};
-
-// 工作经验数据模型
-const experienceData = [
-  {
-    id: 'exp-1',
-    year: '2021 - 至今',
-    role: '高级渠道经理',
-    company: '某知名科技集团',
-    desc: '负责华东区渠道生态建设，年度业绩达成率 120%，成功拓展核心代理商 15 家。',
-    icon: <Globe size={20}/>,
-    details: {
-      kpi: ['年度营收贡献突破 1.5 亿', '新拓展头部代理商 15 家', '区域渠道留存率提升至 95%'],
-      responsibilities: [
-        '制定并执行华东区域渠道开拓战略，建立分级代理商管理体系。',
-        '主导千万级核心项目的渠道资源协调与打单支持。',
-        '定期组织渠道赋能大会与技术沙龙，提升代理商销售人员的转化能力。',
-        '构建渠道反馈闭环，反向驱动产品线的迭代与优化。'
-      ],
-      achievements: '在任期间，华东大区渠道销售额连续两年保持 35% 以上的复合增长，荣获“年度最佳渠道开拓者”称号。'
-    }
-  },
-  {
-    id: 'exp-2',
-    year: '2019 - 2021',
-    role: '销售工程师 (Pre-sales)',
-    company: '行业领先解决方案提供商',
-    desc: '深度参与大客户技术选型，负责定制化方案编写与 POC 演示，支撑 5000 万级项目落地。',
-    icon: <ShieldCheck size={20}/>,
-    details: {
-      kpi: ['支撑中标金额达 8500 万', '主导完成 30+ 份定制化解决方案', 'POC 测试通过率 100%'],
-      responsibilities: [
-        '作为一线技术专家，配合销售经理与大客户进行深度需求沟通与技术痛点挖掘。',
-        '负责复杂项目（如智慧城市、工业互联网）的整体解决方案架构设计与标书编写。',
-        '现场搭建并演示产品 POC 环境，解答客户的深度技术疑问，确立技术优势。',
-        '串联研发、产品线与交付团队，确保方案的可行性与最终交付质量。'
-      ],
-      achievements: '成功主导了“市级智慧水务集成项目”的技术攻坚，以技术评分第一的成绩中标，成为公司年度标杆项目。'
-    }
-  }
-];
-
-// 项目数据
-const projectsData = [
-  {
-    id: 'p1',
-    title: '市级智慧水务物联网管控平台',
-    category: '政府/公用事业',
-    brief: '主导前期技术交流与方案设计，中标金额 3500 万。',
-    bg: 'bg-blue-500',
-    details: {
-      background: '该市老旧管网漏损严重，缺乏统一的数字化监控手段。客户急需一套能整合现有系统、具备预测性维护能力的物联网平台。',
-      challenges: ['底层设备协议复杂，包含几十种不同的老旧传感器。', '多部门数据孤岛问题严重，协调难度大。', '友商竞争激烈，技术壁垒亟待突破。'],
-      solutions: ['提出基于边缘计算的统一网关接入方案，解决协议碎片化问题。', '设计了微服务架构的数据中台，打通水务局与环保局的数据流。', '在 POC 阶段，用一周时间搭建了高保真的漏损预测模型演示，赢得客户信任。'],
-      results: ['首期项目成功验收，漏损率预期下降 15%。', '客户追加二期 1500 万建设预算。']
-    }
-  },
-  {
-    id: 'p2',
-    title: '大型制造企业工业互联网转型',
-    category: '工业互联网',
-    brief: '协调 5 家核心渠道商联合打单，构建区域标杆案例。',
-    bg: 'bg-green-500',
-    details: {
-      background: '某头部家电制造企业希望进行生产线柔性改造，实现柔性排产和能耗监控。',
-      challenges: ['项目涉及软硬件深度耦合，单一渠道商无法独立承接。', '客户对 ROI 要求极高，投资决策链长。'],
-      solutions: ['作为原厂代表，牵头组织硬件厂商、集成商和应用开发商组成联合项目组。', '重构了商业逻辑，从“卖系统”转变为“承诺能耗降低分成”。', '组织多场渠道赋能会，统一联合体对客户的话术和技术路线。'],
-      results: ['成功促成三方联合体中标，总金额突破 5000 万。', '该模式被公司提炼为标准化打法，向全国推广。']
-    }
-  }
-];
-
-// 履历详情视图
-const ExperienceDetailView = ({ expId, onBack }) => {
-  const exp = experienceData.find(e => e.id === expId);
-  if (!exp) return null;
-
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -20 }}
-      className="max-w-4xl mx-auto px-6 pt-32 pb-20"
-    >
-      <button 
-        onClick={onBack}
-        className="flex items-center gap-2 text-[#1a2356] font-bold mb-12 hover:-translate-x-2 transition-transform"
-      >
-        <ChevronRight size={20} className="rotate-180" /> 返回主页
-      </button>
-
-      <div className="bg-white border-4 border-[#1a2356] rounded-[40px] shadow-[12px_12px_0_rgba(26,35,86,1)] overflow-hidden">
-        <div className="bg-[#1a2356] text-white p-12 relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-64 h-64 bg-blue-500 rounded-full blur-3xl opacity-20 -translate-y-1/2 translate-x-1/2" />
-          <div className="relative z-10">
-            <div className="flex items-center gap-4 mb-4 text-blue-300">
-               {exp.icon} <span className="font-bold tracking-wider">{exp.year}</span>
-            </div>
-            <h1 className="text-4xl md:text-5xl font-black mb-4">{exp.role}</h1>
-            <h2 className="text-xl text-blue-100 opacity-90 font-medium">{exp.company}</h2>
-          </div>
-        </div>
-
-        <div className="p-12 space-y-12">
-          {/* 核心指标 */}
-          <section>
-            <h3 className="text-xl font-black text-[#1a2356] mb-6 flex items-center gap-2">
-              <TrendingUp className="text-blue-500"/> 核心指标表现
-            </h3>
-            <div className="grid md:grid-cols-3 gap-4">
-              {exp.details.kpi.map((item, i) => (
-                <div key={i} className="bg-blue-50 border-2 border-blue-100 p-4 rounded-2xl flex items-start gap-3">
-                  <CheckCircle2 className="text-blue-500 shrink-0 mt-1" size={18}/>
-                  <span className="font-bold text-[#1a2356] text-sm leading-snug">{item}</span>
-                </div>
-              ))}
-            </div>
-          </section>
-
-          {/* 核心职责 */}
-          <section>
-            <h3 className="text-xl font-black text-[#1a2356] mb-6 flex items-center gap-2">
-              <Briefcase className="text-yellow-500"/> 核心职责描述
-            </h3>
-            <ul className="space-y-4">
-              {exp.details.responsibilities.map((item, i) => (
-                <li key={i} className="flex gap-4 items-start">
-                  <div className="w-2 h-2 rounded-full bg-[#1a2356] mt-2 shrink-0" />
-                  <p className="text-gray-600 leading-relaxed font-medium">{item}</p>
-                </li>
-              ))}
-            </ul>
-          </section>
-
-          {/* 关键成就 */}
-          <section className="bg-yellow-50 border-l-4 border-yellow-500 p-6 rounded-r-2xl">
-            <h3 className="text-lg font-black text-[#1a2356] mb-2">⭐ 关键成就</h3>
-            <p className="text-gray-700 leading-relaxed font-medium italic">"{exp.details.achievements}"</p>
-          </section>
-        </div>
-      </div>
-    </motion.div>
-  );
-};
-
-// 项目详情视图
-const ProjectDetailView = ({ projectId, onBack }) => {
-  const project = projectsData.find(p => p.id === projectId);
-  if (!project) return null;
-
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -20 }}
-      className="max-w-5xl mx-auto px-6 pt-32 pb-20"
-    >
-      <button 
-        onClick={onBack}
-        className="flex items-center gap-2 text-[#1a2356] font-bold mb-12 hover:-translate-x-2 transition-transform"
-      >
-        <ChevronRight size={20} className="rotate-180" /> 返回主页
-      </button>
-
-      <div className="grid lg:grid-cols-3 gap-12">
-        {/* 主要内容区 */}
-        <div className="lg:col-span-2 space-y-12">
-          <div>
-            <span className={`inline-block px-4 py-1 rounded-full text-white text-sm font-bold mb-6 ${project.bg}`}>
-              {project.category}
-            </span>
-            <h1 className="text-4xl md:text-5xl font-black text-[#1a2356] leading-tight mb-6">
-              {project.title}
-            </h1>
-            <p className="text-xl text-gray-500 font-medium">
-              {project.brief}
-            </p>
-          </div>
-
-          <div className="prose prose-lg max-w-none">
-            <h3 className="text-2xl font-bold text-[#1a2356] flex items-center gap-2">
-              <Target className="text-blue-500"/> 项目背景
-            </h3>
-            <p className="text-gray-600 leading-relaxed bg-white p-6 rounded-2xl border-2 border-gray-100 shadow-sm">
-              {project.details.background}
-            </p>
-
-            <h3 className="text-2xl font-bold text-[#1a2356] flex items-center gap-2 mt-12">
-              <Network className="text-yellow-500"/> 核心挑战
-            </h3>
-            <ul className="space-y-4">
-              {project.details.challenges.map((c, i) => (
-                <li key={i} className="flex gap-4 items-start bg-yellow-50 p-4 rounded-xl border border-yellow-100">
-                  <div className="bg-yellow-500 text-white w-6 h-6 rounded-full flex items-center justify-center shrink-0 mt-0.5 text-sm font-bold">{i+1}</div>
-                  <span className="text-gray-700">{c}</span>
-                </li>
-              ))}
-            </ul>
-
-            <h3 className="text-2xl font-bold text-[#1a2356] flex items-center gap-2 mt-12">
-              <Cpu className="text-blue-500"/> 解决方案
-            </h3>
-            <div className="bg-[#1a2356] text-white p-8 rounded-3xl space-y-6">
-              {project.details.solutions.map((s, i) => (
-                <div key={i} className="flex gap-4 items-start">
-                  <CheckCircle2 className="text-blue-400 shrink-0 mt-1"/>
-                  <span className="text-blue-50 leading-relaxed">{s}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-
-        {/* 侧边栏：结果 */}
-        <div className="lg:col-span-1">
-          <div className="sticky top-32 bg-white border-4 border-[#1a2356] rounded-3xl p-8 shadow-[8px_8px_0_rgba(26,35,86,1)]">
-            <h3 className="text-xl font-black text-[#1a2356] mb-6 flex items-center gap-2 border-b-2 border-gray-100 pb-4">
-              <BarChart className="text-blue-500"/> 最终成果
-            </h3>
-            <ul className="space-y-6">
-              {project.details.results.map((r, i) => (
-                <li key={i} className="flex flex-col gap-2">
-                  <span className="text-[#1a2356] font-bold text-lg leading-snug">{r}</span>
-                </li>
-              ))}
-            </ul>
-            
-            <button className="w-full mt-8 py-4 bg-blue-50 text-blue-600 font-bold rounded-xl hover:bg-blue-100 transition-colors flex items-center justify-center gap-2">
-              <Download size={18} /> 下载完整复盘报告
-            </button>
-          </div>
-        </div>
-      </div>
-    </motion.div>
-  );
-};
-
-export default function App() {
-  const [activeTab, setActiveTab] = useState('首页');
-  const [isScrolled, setIsScrolled] = useState(false);
-  const [view, setView] = useState({ type: 'home', id: null });
-  const [scrollProgress, setScrollProgress] = useState(0);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      const scrollY = window.scrollY;
-      setIsScrolled(scrollY > 50);
-      
-      // 计算页面滚动进度百分比
-      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
-      const progress = docHeight > 0 ? (scrollY / docHeight) * 100 : 0;
-      setScrollProgress(progress);
-      
-      if (view.type === 'home') {
-        const sections = ['home', 'experience', 'projects', 'services'];
-        for (const section of sections) {
-          const element = document.getElementById(section);
-          if (element) {
-            const rect = element.getBoundingClientRect();
-            if (rect.top >= 0 && rect.top <= 300) {
-              const tabName = {
-                home: '首页',
-                experience: '工作经验',
-                projects: '精选案例',
-                services: '服务范围'
-              }[section];
-              setActiveTab(tabName);
-            }
-          }
+    <style>
+        /* 加载屏幕动画 */
+        #loading-screen {
+            position: fixed; inset: 0; background: #eef2f6; z-index: 9999;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            transition: opacity 0.5s ease;
         }
-      }
-    };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, [view.type]);
-
-  const scrollTo = (id, tabName) => {
-    if (view.type !== 'home') {
-      setView({ type: 'home', id: null });
-      setTimeout(() => {
-        const element = document.getElementById(id);
-        if (element) element.scrollIntoView({ behavior: 'smooth' });
-      }, 100);
-    } else {
-      const element = document.getElementById(id);
-      if (element) {
-        element.scrollIntoView({ behavior: 'smooth' });
-        setActiveTab(tabName);
-      }
-    }
-  };
-
-  return (
-    <div className="min-h-screen font-sans selection:bg-blue-500 selection:text-white pb-20" style={{ backgroundColor: theme.bg }}>
-      
-      {/* Navigation */}
-      <nav className={`fixed top-6 left-1/2 -translate-x-1/2 z-50 transition-all duration-500 w-[95%] max-w-4xl`}>
-        <div className={`flex items-center justify-between bg-white border-[3px] border-[#1a2356] rounded-full p-2 pl-6 ${isScrolled ? 'shadow-lg scale-95' : 'shadow-[4px_4px_0_rgba(26,35,86,1)] scale-100'} transition-all`}>
-          <div className="w-8 h-8 border-[3px] border-[#1a2356] rounded-full flex items-center justify-center bg-blue-500 text-white font-bold text-sm">
-            伽
-          </div>
-          <ul className="hidden md:flex gap-8 font-bold text-[15px] text-[#1a2356] relative">
-            {['首页', '工作经验', '精选案例', '服务范围'].map((tab) => (
-              <li 
-                key={tab} 
-                className="cursor-pointer hover:text-blue-500 transition-colors relative py-2"
-                onClick={() => {
-                  const idMap = {'首页':'home', '工作经验':'experience', '精选案例':'projects', '服务范围':'services'};
-                  scrollTo(idMap[tab], tab);
-                }}
-              >
-                {tab}
-                {activeTab === tab && (
-                  <motion.div 
-                    layoutId="nav-indicator"
-                    className="absolute -bottom-1 left-0 right-0 h-1 bg-blue-500 rounded-full"
-                    transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                  />
-                )}
-              </li>
-            ))}
-          </ul>
-          <button 
-            onClick={() => scrollTo('services', '服务范围')}
-            className="bg-[#1a2356] text-white p-2 rounded-full hover:scale-110 transition-transform active:scale-95"
-          >
-            <Mail size={20} />
-          </button>
-        </div>
-      </nav>
-
-      <AnimatePresence mode="wait">
-        {view.type === 'home' && (
-          <motion.main 
-            key="home"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="max-w-6xl mx-auto px-6 pt-40 md:pt-48"
-          >
-            
-            {}
-            <section id="home" className="grid lg:grid-cols-2 gap-16 items-center mb-32 scroll-mt-48">
-              <div className="space-y-6 relative z-10">
-                <h1 className="text-5xl md:text-6xl font-black text-[#1a2356] leading-[1.1] tracking-tight">
-                  你好，我是 <span className="bg-blue-500 text-white px-2 inline-block -rotate-2 transform hover:rotate-0 transition-transform">lemon</span><br/>
-                  ，一位<br/>
-                  <div className="mt-4 h-16 md:h-20">
-                    <Typewriter texts={['销售工程师', '渠道经理', '行业方案顾问', '成长践行者']} />
-                  </div>
-                </h1>
-                
-                <div className="text-sm md:text-base font-bold text-gray-500 tracking-wider">
-                  技术出身的业务开拓者 · 擅长复杂方案落地 · 渠道生态建设者
-                </div>
-                
-                <p className="text-lg text-gray-600 leading-relaxed max-w-lg">
-                  从底层代码到商业逻辑，我擅长将复杂的技术方案转化为客户能听懂的业务价值。专注于大客户攻坚、渠道体系搭建与技术销售转化。
-                </p>
-                
-                <div className="flex gap-4 pt-4">
-                  <button 
-                    onClick={() => scrollTo('services', '服务范围')}
-                    className="bg-[#1a2356] text-white px-8 py-4 rounded-2xl font-bold border-2 border-[#1a2356] hover:-translate-y-1 hover:shadow-[4px_4px_0_rgba(26,35,86,1)] transition-all active:translate-y-0 active:shadow-none flex items-center gap-2"
-                  >
-                    <Mail size={18}/> 商务洽谈
-                  </button>
-                  <button 
-                    onClick={() => scrollTo('projects', '精选案例')}
-                    className="bg-transparent text-[#1a2356] px-8 py-4 rounded-2xl font-bold border-2 border-[#1a2356] hover:bg-gray-50 transition-colors flex items-center gap-2"
-                  >
-                    <TerminalSquare size={18}/> 获取方案
-                  </button>
-                </div>
-              </div>
-
-              {/* 右侧互动头像卡片 */}
-              <div className="relative flex justify-center lg:justify-end pr-4 perspective-1000">
-                
-                {/* 装饰性背景 */}
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="w-80 h-80 border-2 border-dashed border-gray-300 rounded-full animate-spin-slow"></div>
-                </div>
-
-                <motion.div 
-                  whileHover={{ rotateY: -10, rotateX: 5, scale: 1.02 }}
-                  transition={{ type: "spring", stiffness: 200, damping: 20 }}
-                  className="bg-[#f5b225] border-[4px] border-[#1a2356] rounded-[32px] aspect-square w-full max-w-[420px] shadow-[16px_16px_0_rgba(26,35,86,1)] relative overflow-hidden flex items-end justify-center z-10 group"
-                >
-                  <div className="w-[70%] h-[80%] bg-[#2a2a2a] rounded-t-full relative border-t-4 border-x-4 border-[#1a2356]">
-                    <div className="absolute top-[30%] left-1/2 -translate-x-1/2 -translate-y-1/2 w-[60%] h-[50%] bg-[#ffdbac] rounded-[40%] border-4 border-[#1a2356]"></div>
-                  </div>
-                  
-                  {/* 悬停光泽效果 */}
-                  <div className="absolute inset-0 bg-gradient-to-tr from-white/0 via-white/20 to-white/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
-                </motion.div>
-
-                {/* 浮动数据徽章 1：经验 */}
-                <motion.div 
-                  animate={{ y: [0, -15, 0] }}
-                  transition={{ repeat: Infinity, duration: 4, ease: "easeInOut" }}
-                  className="absolute bottom-12 -left-4 bg-white border-[3px] border-[#1a2356] px-4 py-3 rounded-2xl shadow-[4px_4px_0_rgba(26,35,86,1)] z-20 flex items-center gap-3"
-                >
-                  <div className="bg-blue-100 text-blue-600 p-2 rounded-lg"><Briefcase size={20}/></div>
-                  <div>
-                    <div className="font-black text-xl text-[#1a2356]">8+</div>
-                    <div className="text-xs font-bold text-gray-500">年行业经验</div>
-                  </div>
-                </motion.div>
-
-                {/* 浮动数据徽章 2：项目营收 */}
-                <motion.div 
-                  animate={{ y: [0, 10, 0], x: [0, -5, 0] }}
-                  transition={{ repeat: Infinity, duration: 5, delay: 1, ease: "easeInOut" }}
-                  className="absolute top-20 -left-8 bg-white border-[3px] border-[#1a2356] px-4 py-3 rounded-2xl shadow-[4px_4px_0_rgba(26,35,86,1)] z-20 flex items-center gap-3"
-                >
-                  <div className="bg-green-100 text-green-600 p-2 rounded-lg"><TrendingUp size={20}/></div>
-                  <div>
-                    <div className="font-black text-xl text-[#1a2356]">200M+</div>
-                    <div className="text-xs font-bold text-gray-500">年度营收贡献</div>
-                  </div>
-                </motion.div>
-
-                 {/* 浮动数据徽章 3：转化率 */}
-                 <motion.div 
-                  animate={{ y: [0, -10, 0], x: [0, 5, 0] }}
-                  transition={{ repeat: Infinity, duration: 3.5, delay: 0.5, ease: "easeInOut" }}
-                  className="absolute top-1/2 -right-6 translate-x-4 bg-white border-[3px] border-[#1a2356] px-4 py-3 rounded-2xl shadow-[4px_4px_0_rgba(26,35,86,1)] z-20 flex items-center gap-3"
-                >
-                  <div className="bg-yellow-100 text-yellow-600 p-2 rounded-lg"><CheckCircle2 size={20}/></div>
-                  <div>
-                    <div className="font-black text-xl text-[#1a2356]">85%</div>
-                    <div className="text-xs font-bold text-gray-500">大客户打单胜率</div>
-                  </div>
-                </motion.div>
-
-              </div>
-            </section>
-
-            {}
-            {/* 工作经验 Section - 可点击 */}
-            <section id="experience" className="bg-[#1a2356] rounded-[40px] p-12 text-white mb-32 relative overflow-hidden scroll-mt-32">
-              <div className="grid lg:grid-cols-3 gap-12 relative z-10">
-                <div>
-                  <h2 className="text-5xl font-black mb-6">职业 <span className="text-blue-400">履历</span></h2>
-                  <p className="text-blue-100 opacity-80 mb-8 leading-relaxed">
-                    从技术研发转型商务开拓，我擅长在复杂的技术场景中精准捕捉商业机会。
-                  </p>
-                  <button className="px-6 py-3 bg-white text-[#1a2356] font-bold rounded-xl flex items-center gap-2 hover:bg-blue-50 transition-colors">
-                    <Download size={18} /> 下载简历
-                  </button>
-
-                  {/* 滚动触发：核心技能矩阵 */}
-                  <div className="mt-16 space-y-6">
-                    <h3 className="text-xl font-bold mb-6 flex items-center gap-2">
-                      <Target size={20} className="text-blue-400"/> 核心技能矩阵
-                    </h3>
-                    {[
-                      { name: '大客户开拓与销售', percent: 95 },
-                      { name: '渠道生态体系搭建', percent: 90 },
-                      { name: '复杂解决方案架构', percent: 85 },
-                      { name: '售前技术团队协同', percent: 80 }
-                    ].map((skill, idx) => (
-                      <div key={idx} className="group">
-                        <div className="flex justify-between mb-2">
-                          <span className="text-sm font-bold text-blue-100 group-hover:text-white transition-colors">{skill.name}</span>
-                          <span className="text-sm font-bold text-blue-400">{skill.percent}%</span>
-                        </div>
-                        {/* 技能条槽 */}
-                        <div className="h-2.5 w-full bg-[#0a1236] rounded-full overflow-hidden border border-blue-900/50">
-                          {/* 技能条填充 (基于 Framer Motion 的 whileInView) */}
-                          <motion.div
-                            initial={{ width: 0 }}
-                            whileInView={{ width: `${skill.percent}%` }}
-                            viewport={{ once: true, margin: "-50px" }}
-                            transition={{ duration: 1.2, delay: idx * 0.15, ease: "easeOut" }}
-                            className="h-full bg-gradient-to-r from-blue-600 to-blue-400 rounded-full relative"
-                          >
-                            <div className="absolute top-0 right-0 bottom-0 w-4 bg-white/20" />
-                          </motion.div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-                <div className="lg:col-span-2 space-y-6">
-                  {experienceData.map((exp, i) => (
-                    <motion.div 
-                      key={exp.id} 
-                      whileHover={{ scale: 1.02 }}
-                      whileTap={{ scale: 0.98 }}
-                      onClick={() => {
-                        window.scrollTo(0,0);
-                        setView({ type: 'experience-detail', id: exp.id });
-                      }}
-                      className="bg-white/10 backdrop-blur-md border-2 border-white/20 p-6 rounded-2xl hover:bg-white/15 transition-colors cursor-pointer group"
-                    >
-                      <div className="flex justify-between items-start mb-2">
-                        <span className="text-blue-400 font-bold text-sm">{exp.year}</span>
-                        <div className="flex items-center gap-3">
-                          <span className="text-xs font-bold bg-white/10 px-2 py-1 rounded-md opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1">查看详情 <ChevronRight size={12}/></span>
-                          <div className="bg-blue-500/20 p-2 rounded-lg text-blue-400 group-hover:bg-blue-500 group-hover:text-white transition-colors">{exp.icon}</div>
-                        </div>
-                      </div>
-                      <h3 className="text-xl font-bold mb-2 group-hover:text-blue-200 transition-colors">{exp.role}</h3>
-                      <p className="text-sm text-blue-100/70">{exp.desc}</p>
-                    </motion.div>
-                  ))}
-                </div>
-              </div>
-            </section>
-
-            {}
-            {/* 精选案例 Section */}
-            <section id="projects" className="mb-32 scroll-mt-32">
-              <div className="flex justify-between items-end mb-12">
-                <div>
-                  <h2 className="text-4xl font-black text-[#1a2356] mb-2">精选案例 <span className="text-blue-500">PROJECTS</span></h2>
-                  <p className="text-gray-500 font-bold">成功交付的大型行业解决方案</p>
-                </div>
-                <button className="hidden md:flex font-bold text-[#1a2356] hover:text-blue-500 items-center gap-1 border-b-2 border-transparent hover:border-blue-500 transition-all pb-1">
-                  查看全部案例 <ArrowRight size={18}/>
-                </button>
-              </div>
-
-              <div className="grid md:grid-cols-2 gap-8">
-                {projectsData.map((project) => (
-                  <motion.div 
-                    key={project.id}
-                    whileHover={{ y: -8 }}
-                    whileTap={{ scale: 0.98 }}
-                    onClick={() => {
-                      window.scrollTo(0,0);
-                      setView({ type: 'project-detail', id: project.id });
-                    }}
-                    className={`cursor-pointer border-4 border-[#1a2356] rounded-3xl p-8 h-80 flex flex-col justify-between shadow-[8px_8px_0_rgba(26,35,86,1)] hover:shadow-[12px_12px_0_rgba(26,35,86,1)] transition-all group relative overflow-hidden bg-white`}
-                  >
-                    {/* 卡片背景装饰块 */}
-                    <div className={`absolute top-0 right-0 w-40 h-40 ${project.bg} opacity-10 rounded-bl-full transform translate-x-10 -translate-y-10 group-hover:scale-150 transition-transform duration-700`}/>
-                    
-                    <div className="relative z-10">
-                      <span className={`inline-block px-3 py-1 rounded-full text-white text-xs font-bold mb-4 ${project.bg}`}>
-                        {project.category}
-                      </span>
-                      <h3 className="text-2xl font-black text-[#1a2356] leading-tight mb-2 group-hover:text-blue-600 transition-colors">
-                        {project.title}
-                      </h3>
-                      <p className="text-gray-600 text-sm">
-                        {project.brief}
-                      </p>
-                    </div>
-
-                    <div className="flex justify-between items-center relative z-10 border-t-2 border-gray-100 pt-4 mt-4">
-                      <span className="text-sm font-bold text-[#1a2356]">查看方案细节</span>
-                      <div className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center group-hover:bg-[#1a2356] group-hover:text-white transition-colors">
-                        <ArrowRight size={20} className="-rotate-45 group-hover:rotate-0 transition-transform"/>
-                      </div>
-                    </div>
-                  </motion.div>
-                ))}
-              </div>
-            </section>
-
-            {}
-            {/* 服务范围 */}
-            <section id="services" className="mb-20 scroll-mt-32">
-              <div className="text-center mb-16">
-                <h2 className="text-4xl font-black text-[#1a2356] mb-4">我的核心 <span className="text-blue-500">业务能力</span></h2>
-                <p className="text-gray-500 font-bold">不仅懂技术，更懂如何把技术变成能落地的生意。</p>
-              </div>
-
-              <div className="grid md:grid-cols-3 gap-6">
-                <div className="bg-white border-[3px] border-[#1a2356] rounded-2xl p-8 hover:-translate-y-2 transition-transform shadow-[4px_4px_0_rgba(26,35,86,1)]">
-                  <div className="text-4xl mb-4">🎯</div>
-                  <h3 className="text-xl font-bold mb-3">解决方案定制</h3>
-                  <p className="text-gray-600 text-sm leading-relaxed">基于客户痛点，主导架构设计与 POC 演示，将技术语言翻译为商业价值，提升大单赢率。</p>
-                </div>
-                <div className="bg-white border-[3px] border-[#1a2356] rounded-2xl p-8 hover:-translate-y-2 transition-transform shadow-[4px_4px_0_rgba(26,35,86,1)]">
-                  <div className="text-4xl mb-4">🤝</div>
-                  <h3 className="text-xl font-bold mb-3">渠道生态建设</h3>
-                  <p className="text-gray-600 text-sm leading-relaxed">建立分级代理商体系，制定激励与考核策略，协调原厂资源支持核心渠道打单。</p>
-                </div>
-                
-                {/* CTA Card */}
-                <div className="bg-blue-500 text-white border-[3px] border-blue-600 rounded-2xl p-8 flex flex-col justify-center items-center text-center hover:-translate-y-2 transition-transform shadow-[4px_4px_0_rgba(0,100,200,1)]">
-                  <div className="text-4xl mb-4">✉️</div>
-                  <h3 className="text-2xl font-black mb-2">获取合作</h3>
-                  <p className="text-blue-100 text-sm mb-6">需要高级方案支持或渠道规划？</p>
-                  <a href="mailto:hello@example.com" className="w-full bg-white text-blue-600 font-bold py-3 rounded-xl hover:scale-105 transition-transform active:scale-95 block text-center">
-                    商务对接
-                  </a>
-                </div>
-              </div>
-            </section>
-          </motion.main>
-        )}
+        .spinner {
+            width: 50px; height: 50px; border: 5px solid #1a2356; border-top-color: transparent;
+            border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 20px;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
         
-        {/* 动态详情页渲染逻辑 */}
-        {view.type === 'project-detail' && (
-          <ProjectDetailView 
-            key="project-detail"
-            projectId={view.id} 
-            onBack={() => setView({ type: 'home', id: null })} 
-          />
-        )}
-        {view.type === 'experience-detail' && (
-          <ExperienceDetailView 
-            key="experience-detail"
-            expId={view.id} 
-            onBack={() => setView({ type: 'home', id: null })} 
-          />
-        )}
-      </AnimatePresence>
-
-      {/* 滚动进度环 & 回到顶部按钮 */}
-      <AnimatePresence>
-        {isScrolled && (
-          <motion.button
-            initial={{ opacity: 0, scale: 0.5, y: 20 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.5, y: 20 }}
-            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-            className="fixed bottom-8 right-8 z-50 w-14 h-14 flex items-center justify-center bg-white rounded-full shadow-[4px_4px_0_rgba(26,35,86,1)] border-[3px] border-[#1a2356] hover:-translate-y-1 active:translate-y-0 active:shadow-none transition-all group overflow-hidden"
-          >
-            {/* SVG 进度圆环 */}
-            <svg className="absolute inset-0 w-full h-full -rotate-90 rounded-full" viewBox="0 0 100 100">
-              <circle cx="50" cy="50" r="44" fill="none" stroke="#eef2f6" strokeWidth="6" />
-              <circle
-                cx="50" cy="50" r="44" fill="none" stroke="#0088ff" strokeWidth="6"
-                strokeDasharray="276.46" /* 2 * PI * 44 */
-                strokeDashoffset={276.46 - (276.46 * scrollProgress) / 100}
-                strokeLinecap="round"
-                className="transition-all duration-150 ease-out"
-              />
-            </svg>
-            <ArrowUp size={24} className="text-[#1a2356] group-hover:text-blue-500 transition-colors z-10" />
-          </motion.button>
-        )}
-      </AnimatePresence>
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; scroll-behavior: smooth;}
+    </style>
+</head>
+<body>
+    <!-- 加载遮罩 -->
+    <div id="loading-screen">
+        <div class="spinner"></div>
+        <h2 style="color: #1a2356; font-weight: bold; font-size: 1.2rem;">正在加载页面...</h2>
     </div>
-  );
-}
+
+    <div id="root"></div>
+
+    <script type="text/babel" data-type="module">
+        // 1. 从全局变量中提取需要的核心功能
+        const { useState, useEffect, forwardRef } = React;
+        
+        // --- 容错处理：获取 Framer Motion 变量 ---
+        const FMLib = window.Motion || window.FramerMotion || window.framerMotion;
+        let motion, AnimatePresence;
+
+        if (FMLib) {
+            motion = FMLib.motion;
+            AnimatePresence = FMLib.AnimatePresence;
+        } else {
+            console.warn("Framer Motion 加载失败或变量不匹配，已启用降级模式 (无动画)");
+            // 降级占位，防止 React 报错导致白屏
+            const filterProps = (props) => {
+                const { initial, animate, exit, whileHover, whileTap, whileInView, viewport, transition, layoutId, ...rest } = props;
+                return rest;
+            };
+            motion = {
+                div: forwardRef((props, ref) => <div ref={ref} {...filterProps(props)} />),
+                button: forwardRef((props, ref) => <button ref={ref} {...filterProps(props)} />),
+                main: forwardRef((props, ref) => <main ref={ref} {...filterProps(props)} />)
+            };
+            AnimatePresence = ({children}) => <>{children}</>;
+        }
+
+        // 2. 内置 SVG 图标 (彻底解决 lucide-react 加载报错问题)
+        const Icon = ({ size=24, className="", children }) => (
+            <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>{children}</svg>
+        );
+        const Briefcase = (p) => <Icon {...p}><rect width="20" height="14" x="2" y="7" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></Icon>;
+        const ChevronRight = (p) => <Icon {...p}><path d="m9 18 6-6-6-6"/></Icon>;
+        const Globe = (p) => <Icon {...p}><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></Icon>;
+        const ShieldCheck = (p) => <Icon {...p}><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></Icon>;
+        const TrendingUp = (p) => <Icon {...p}><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></Icon>;
+        const CheckCircle2 = (p) => <Icon {...p}><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></Icon>;
+        const Mail = (p) => <Icon {...p}><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></Icon>;
+        const Download = (p) => <Icon {...p}><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></Icon>;
+        const TerminalSquare = (p) => <Icon {...p}><rect width="18" height="18" x="3" y="3" rx="2"/><path d="m7 11 2-2-2-2"/><path d="M11 13h4"/></Icon>;
+        const Network = (p) => <Icon {...p}><rect x="16" y="16" width="6" height="6" rx="1"/><rect x="2" y="16" width="6" height="6" rx="1"/><rect x="9" y="2" width="6" height="6" rx="1"/><path d="M5 16v-3a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3"/><path d="M12 12V8"/></Icon>;
+        const Cpu = (p) => <Icon {...p}><rect width="16" height="16" x="4" y="4" rx="2"/><rect width="6" height="6" x="9" y="9" rx="1"/><path d="M15 2v2"/><path d="M15 20v2"/><path d="M2 15h2"/><path d="M2 9h2"/><path d="M20 15h2"/><path d="M20 9h2"/><path d="M9 2v2"/><path d="M9 20v2"/></Icon>;
+        const BarChart = (p) => <Icon {...p}><line x1="12" x2="12" y1="20" y2="10"/><line x1="18" x2="18" y1="20" y2="4"/><line x1="6" x2="6" y1="20" y2="16"/></Icon>;
+        const Target = (p) => <Icon {...p}><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></Icon>;
+        const ArrowRight = (p) => <Icon {...p}><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></Icon>;
+        const ArrowUp = (p) => <Icon {...p}><path d="m5 12 7-7 7 7"/><path d="M12 19V5"/></Icon>;
+
+
+        // ------------------ 核心代码 ------------------
+        // 统一的主题配置
+        const theme = {
+        primary: '#1a2356',
+        accent: '#0088ff',
+        yellow: '#f5b225',
+        bg: '#eef2f6',
+        surface: '#ffffff'
+        };
+
+        // 打字机组件
+        const Typewriter = ({ texts }) => {
+        const [currentText, setCurrentText] = useState('');
+        const [currentIndex, setCurrentIndex] = useState(0);
+        const [isDeleting, setIsDeleting] = useState(false);
+        const [blink, setBlink] = useState(true);
+
+        useEffect(() => {
+            const blinkInterval = setInterval(() => setBlink(b => !b), 500);
+            return () => clearInterval(blinkInterval);
+        }, []);
+
+        useEffect(() => {
+            const text = texts[currentIndex];
+            
+            let timer;
+            if (isDeleting) {
+            if (currentText === '') {
+                setIsDeleting(false);
+                setCurrentIndex((prev) => (prev + 1) % texts.length);
+            } else {
+                timer = setTimeout(() => {
+                setCurrentText(currentText.slice(0, -1));
+                }, 75);
+            }
+            } else {
+            if (currentText === text) {
+                timer = setTimeout(() => setIsDeleting(true), 2000);
+            } else {
+                timer = setTimeout(() => {
+                setCurrentText(text.slice(0, currentText.length + 1));
+                }, 150);
+            }
+            }
+            
+            return () => clearTimeout(timer);
+        }, [currentText, isDeleting, currentIndex, texts]);
+
+        return (
+            <span className="inline-flex items-center">
+            <span className="bg-[#1a2356] text-white px-4 py-1 leading-snug md:leading-normal">{currentText}</span>
+            <span className={`inline-block w-1 h-12 md:h-14 bg-white ml-1 ${blink ? 'opacity-100' : 'opacity-0'}`} />
+            </span>
+        );
+        };
+
+        // 工作经验数据模型
+        const experienceData = [
+        {
+            id: 'exp-1',
+            year: '2021 - 至今',
+            role: '高级渠道经理',
+            company: '某知名科技集团',
+            desc: '负责华东区渠道生态建设，年度业绩达成率 120%，成功拓展核心代理商 15 家。',
+            icon: <Globe size={20}/>,
+            details: {
+            kpi: ['年度营收贡献突破 1.5 亿', '新拓展头部代理商 15 家', '区域渠道留存率提升至 95%'],
+            responsibilities: [
+                '制定并执行华东区域渠道开拓战略，建立分级代理商管理体系。',
+                '主导千万级核心项目的渠道资源协调与打单支持。',
+                '定期组织渠道赋能大会与技术沙龙，提升代理商销售人员的转化能力。',
+                '构建渠道反馈闭环，反向驱动产品线的迭代与优化。'
+            ],
+            achievements: '在任期间，华东大区渠道销售额连续两年保持 35% 以上的复合增长，荣获“年度最佳渠道开拓者”称号。'
+            }
+        },
+        {
+            id: 'exp-2',
+            year: '2019 - 2021',
+            role: '销售工程师 (Pre-sales)',
+            company: '行业领先解决方案提供商',
+            desc: '深度参与大客户技术选型，负责定制化方案编写与 POC 演示，支撑 5000 万级项目落地。',
+            icon: <ShieldCheck size={20}/>,
+            details: {
+            kpi: ['支撑中标金额达 8500 万', '主导完成 30+ 份定制化解决方案', 'POC 测试通过率 100%'],
+            responsibilities: [
+                '作为一线技术专家，配合销售经理与大客户进行深度需求沟通与技术痛点挖掘。',
+                '负责复杂项目（如智慧城市、工业互联网）的整体解决方案架构设计与标书编写。',
+                '现场搭建并演示产品 POC 环境，解答客户的深度技术疑问，确立技术优势。',
+                '串联研发、产品线与交付团队，确保方案的可行性与最终交付质量。'
+            ],
+            achievements: '成功主导了“市级智慧水务集成项目”的技术攻坚，以技术评分第一的成绩中标，成为公司年度标杆项目。'
+            }
+        }
+        ];
+
+        // 项目数据
+        const projectsData = [
+        {
+            id: 'p1',
+            title: '市级智慧水务物联网管控平台',
+            category: '政府/公用事业',
+            brief: '主导前期技术交流与方案设计，中标金额 3500 万。',
+            bg: 'bg-blue-500',
+            details: {
+            background: '该市老旧管网漏损严重，缺乏统一的数字化监控手段。客户急需一套能整合现有系统、具备预测性维护能力的物联网平台。',
+            challenges: ['底层设备协议复杂，包含几十种不同的老旧传感器。', '多部门数据孤岛问题严重，协调难度大。', '友商竞争激烈，技术壁垒亟待突破。'],
+            solutions: ['提出基于边缘计算的统一网关接入方案，解决协议碎片化问题。', '设计了微服务架构的数据中台，打通水务局与环保局的数据流。', '在 POC 阶段，用一周时间搭建了高保真的漏损预测模型演示，赢得客户信任。'],
+            results: ['首期项目成功验收，漏损率预期下降 15%。', '客户追加二期 1500 万建设预算。']
+            }
+        },
+        {
+            id: 'p2',
+            title: '大型制造企业工业互联网转型',
+            category: '工业互联网',
+            brief: '协调 5 家核心渠道商联合打单，构建区域标杆案例。',
+            bg: 'bg-green-500',
+            details: {
+            background: '某头部家电制造企业希望进行生产线柔性改造，实现柔性排产和能耗监控。',
+            challenges: ['项目涉及软硬件深度耦合，单一渠道商无法独立承接。', '客户对 ROI 要求极高，投资决策链长。'],
+            solutions: ['作为原厂代表，牵头组织硬件厂商、集成商和应用开发商组成联合项目组。', '重构了商业逻辑，从“卖系统”转变为“承诺能耗降低分成”。', '组织多场渠道赋能会，统一联合体对客户的话术和技术路线。'],
+            results: ['成功促成三方联合体中标，总金额突破 5000 万。', '该模式被公司提炼为标准化打法，向全国推广。']
+            }
+        }
+        ];
+
+        // 履历详情视图
+        const ExperienceDetailView = ({ expId, onBack }) => {
+        const exp = experienceData.find(e => e.id === expId);
+        if (!exp) return null;
+
+        return (
+            <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            className="max-w-4xl mx-auto px-6 pt-32 pb-20"
+            >
+            <button 
+                onClick={onBack}
+                className="flex items-center gap-2 text-[#1a2356] font-bold mb-12 hover:-translate-x-2 transition-transform"
+            >
+                <ChevronRight size={20} className="rotate-180" /> 返回主页
+            </button>
+
+            <div className="bg-white border-4 border-[#1a2356] rounded-[40px] shadow-[12px_12px_0_rgba(26,35,86,1)] overflow-hidden">
+                <div className="bg-[#1a2356] text-white p-12 relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-64 h-64 bg-blue-500 rounded-full blur-3xl opacity-20 -translate-y-1/2 translate-x-1/2" />
+                <div className="relative z-10">
+                    <div className="flex items-center gap-4 mb-4 text-blue-300">
+                    {exp.icon} <span className="font-bold tracking-wider">{exp.year}</span>
+                    </div>
+                    <h1 className="text-4xl md:text-5xl font-black mb-4">{exp.role}</h1>
+                    <h2 className="text-xl text-blue-100 opacity-90 font-medium">{exp.company}</h2>
+                </div>
+                </div>
+
+                <div className="p-12 space-y-12">
+                {/* 核心指标 */}
+                <section>
+                    <h3 className="text-xl font-black text-[#1a2356] mb-6 flex items-center gap-2">
+                    <TrendingUp className="text-blue-500"/> 核心指标表现
+                    </h3>
+                    <div className="grid md:grid-cols-3 gap-4">
+                    {exp.details.kpi.map((item, i) => (
+                        <div key={i} className="bg-blue-50 border-2 border-blue-100 p-4 rounded-2xl flex items-start gap-3">
+                        <CheckCircle2 className="text-blue-500 shrink-0 mt-1" size={18}/>
+                        <span className="font-bold text-[#1a2356] text-sm leading-snug">{item}</span>
+                        </div>
+                    ))}
+                    </div>
+                </section>
+
+                {/* 核心职责 */}
+                <section>
+                    <h3 className="text-xl font-black text-[#1a2356] mb-6 flex items-center gap-2">
+                    <Briefcase className="text-yellow-500"/> 核心职责描述
+                    </h3>
+                    <ul className="space-y-4">
+                    {exp.details.responsibilities.map((item, i) => (
+                        <li key={i} className="flex gap-4 items-start">
+                        <div className="w-2 h-2 rounded-full bg-[#1a2356] mt-2 shrink-0" />
+                        <p className="text-gray-600 leading-relaxed font-medium">{item}</p>
+                        </li>
+                    ))}
+                    </ul>
+                </section>
+
+                {/* 关键成就 */}
+                <section className="bg-yellow-50 border-l-4 border-yellow-500 p-6 rounded-r-2xl">
+                    <h3 className="text-lg font-black text-[#1a2356] mb-2">⭐ 关键成就</h3>
+                    <p className="text-gray-700 leading-relaxed font-medium italic">"{exp.details.achievements}"</p>
+                </section>
+                </div>
+            </div>
+            </motion.div>
+        );
+        };
+
+        // 项目详情视图
+        const ProjectDetailView = ({ projectId, onBack }) => {
+        const project = projectsData.find(p => p.id === projectId);
+        if (!project) return null;
+
+        return (
+            <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            className="max-w-5xl mx-auto px-6 pt-32 pb-20"
+            >
+            <button 
+                onClick={onBack}
+                className="flex items-center gap-2 text-[#1a2356] font-bold mb-12 hover:-translate-x-2 transition-transform"
+            >
+                <ChevronRight size={20} className="rotate-180" /> 返回主页
+            </button>
+
+            <div className="grid lg:grid-cols-3 gap-12">
+                {/* 主要内容区 */}
+                <div className="lg:col-span-2 space-y-12">
+                <div>
+                    <span className={`inline-block px-4 py-1 rounded-full text-white text-sm font-bold mb-6 ${project.bg}`}>
+                    {project.category}
+                    </span>
+                    <h1 className="text-4xl md:text-5xl font-black text-[#1a2356] leading-tight mb-6">
+                    {project.title}
+                    </h1>
+                    <p className="text-xl text-gray-500 font-medium">
+                    {project.brief}
+                    </p>
+                </div>
+
+                <div className="prose prose-lg max-w-none">
+                    <h3 className="text-2xl font-bold text-[#1a2356] flex items-center gap-2">
+                    <Target className="text-blue-500"/> 项目背景
+                    </h3>
+                    <p className="text-gray-600 leading-relaxed bg-white p-6 rounded-2xl border-2 border-gray-100 shadow-sm">
+                    {project.details.background}
+                    </p>
+
+                    <h3 className="text-2xl font-bold text-[#1a2356] flex items-center gap-2 mt-12">
+                    <Network className="text-yellow-500"/> 核心挑战
+                    </h3>
+                    <ul className="space-y-4">
+                    {project.details.challenges.map((c, i) => (
+                        <li key={i} className="flex gap-4 items-start bg-yellow-50 p-4 rounded-xl border border-yellow-100">
+                        <div className="bg-yellow-500 text-white w-6 h-6 rounded-full flex items-center justify-center shrink-0 mt-0.5 text-sm font-bold">{i+1}</div>
+                        <span className="text-gray-700">{c}</span>
+                        </li>
+                    ))}
+                    </ul>
+
+                    <h3 className="text-2xl font-bold text-[#1a2356] flex items-center gap-2 mt-12">
+                    <Cpu className="text-blue-500"/> 解决方案
+                    </h3>
+                    <div className="bg-[#1a2356] text-white p-8 rounded-3xl space-y-6">
+                    {project.details.solutions.map((s, i) => (
+                        <div key={i} className="flex gap-4 items-start">
+                        <CheckCircle2 className="text-blue-400 shrink-0 mt-1"/>
+                        <span className="text-blue-50 leading-relaxed">{s}</span>
+                        </div>
+                    ))}
+                    </div>
+                </div>
+                </div>
+
+                {/* 侧边栏：结果 */}
+                <div className="lg:col-span-1">
+                <div className="sticky top-32 bg-white border-4 border-[#1a2356] rounded-3xl p-8 shadow-[8px_8px_0_rgba(26,35,86,1)]">
+                    <h3 className="text-xl font-black text-[#1a2356] mb-6 flex items-center gap-2 border-b-2 border-gray-100 pb-4">
+                    <BarChart className="text-blue-500"/> 最终成果
+                    </h3>
+                    <ul className="space-y-6">
+                    {project.details.results.map((r, i) => (
+                        <li key={i} className="flex flex-col gap-2">
+                        <span className="text-[#1a2356] font-bold text-lg leading-snug">{r}</span>
+                        </li>
+                    ))}
+                    </ul>
+                    
+                    <button className="w-full mt-8 py-4 bg-blue-50 text-blue-600 font-bold rounded-xl hover:bg-blue-100 transition-colors flex items-center justify-center gap-2">
+                    <Download size={18} /> 下载完整复盘报告
+                    </button>
+                </div>
+                </div>
+            </div>
+            </motion.div>
+        );
+        };
+
+        // 主应用组件
+        function App() {
+        const [activeTab, setActiveTab] = useState('首页');
+        const [isScrolled, setIsScrolled] = useState(false);
+        const [view, setView] = useState({ type: 'home', id: null });
+        const [scrollProgress, setScrollProgress] = useState(0);
+
+        useEffect(() => {
+            const handleScroll = () => {
+            const scrollY = window.scrollY;
+            setIsScrolled(scrollY > 50);
+            
+            // 计算页面滚动进度百分比
+            const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+            const progress = docHeight > 0 ? (scrollY / docHeight) * 100 : 0;
+            setScrollProgress(progress);
+            
+            if (view.type === 'home') {
+                const sections = ['home', 'experience', 'projects', 'services'];
+                for (const section of sections) {
+                const element = document.getElementById(section);
+                if (element) {
+                    const rect = element.getBoundingClientRect();
+                    if (rect.top >= 0 && rect.top <= 300) {
+                    const tabName = {
+                        home: '首页',
+                        experience: '工作经验',
+                        projects: '精选案例',
+                        services: '服务范围'
+                    }[section];
+                    setActiveTab(tabName);
+                    }
+                }
+                }
+            }
+            };
+            window.addEventListener('scroll', handleScroll);
+            return () => window.removeEventListener('scroll', handleScroll);
+        }, [view.type]);
+
+        const scrollTo = (id, tabName) => {
+            if (view.type !== 'home') {
+            setView({ type: 'home', id: null });
+            setTimeout(() => {
+                const element = document.getElementById(id);
+                if (element) element.scrollIntoView({ behavior: 'smooth' });
+            }, 100);
+            } else {
+            const element = document.getElementById(id);
+            if (element) {
+                element.scrollIntoView({ behavior: 'smooth' });
+                setActiveTab(tabName);
+            }
+            }
+        };
+
+        return (
+            <div className="min-h-screen font-sans selection:bg-blue-500 selection:text-white pb-20" style={{ backgroundColor: theme.bg }}>
+            
+            {/* Navigation */}
+            <nav className={`fixed top-6 left-1/2 -translate-x-1/2 z-50 transition-all duration-500 w-[95%] max-w-4xl`}>
+                <div className={`flex items-center justify-between bg-white border-[3px] border-[#1a2356] rounded-full p-2 pl-6 ${isScrolled ? 'shadow-lg scale-95' : 'shadow-[4px_4px_0_rgba(26,35,86,1)] scale-100'} transition-all`}>
+                <div className="w-8 h-8 border-[3px] border-[#1a2356] rounded-full flex items-center justify-center bg-blue-500 text-white font-bold text-sm">
+                    伽
+                </div>
+                <ul className="hidden md:flex gap-8 font-bold text-[15px] text-[#1a2356] relative">
+                    {['首页', '工作经验', '精选案例', '服务范围'].map((tab) => (
+                    <li 
+                        key={tab} 
+                        className="cursor-pointer hover:text-blue-500 transition-colors relative py-2"
+                        onClick={() => {
+                        const idMap = {'首页':'home', '工作经验':'experience', '精选案例':'projects', '服务范围':'services'};
+                        scrollTo(idMap[tab], tab);
+                        }}
+                    >
+                        {tab}
+                        {activeTab === tab && (
+                        <motion.div 
+                            layoutId="nav-indicator"
+                            className="absolute -bottom-1 left-0 right-0 h-1 bg-blue-500 rounded-full"
+                            transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                        />
+                        )}
+                    </li>
+                    ))}
+                </ul>
+                <button 
+                    onClick={() => scrollTo('services', '服务范围')}
+                    className="bg-[#1a2356] text-white p-2 rounded-full hover:scale-110 transition-transform active:scale-95"
+                >
+                    <Mail size={20} />
+                </button>
+                </div>
+            </nav>
+
+            <AnimatePresence mode="wait">
+                {view.type === 'home' && (
+                <motion.main 
+                    key="home"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    className="max-w-6xl mx-auto px-6 pt-40 md:pt-48"
+                >
+                    
+                    {}
+                    <section id="home" className="grid lg:grid-cols-2 gap-16 items-center mb-32 scroll-mt-48">
+                    <div className="space-y-6 relative z-10">
+                        <h1 className="text-5xl md:text-6xl font-black text-[#1a2356] leading-[1.1] tracking-tight">
+                        你好，我是 <span className="bg-blue-500 text-white px-2 inline-block -rotate-2 transform hover:rotate-0 transition-transform">伽允</span><br/>
+                        ，一位<br/>
+                        <div className="mt-4 h-16 md:h-20">
+                            <Typewriter texts={['销售工程师', '渠道经理', '行业方案顾问', '成长践行者']} />
+                        </div>
+                        </h1>
+                        
+                        <div className="text-sm md:text-base font-bold text-gray-500 tracking-wider">
+                        技术出身的业务开拓者 · 擅长复杂方案落地 · 渠道生态建设者
+                        </div>
+                        
+                        <p className="text-lg text-gray-600 leading-relaxed max-w-lg">
+                        从底层代码到商业逻辑，我擅长将复杂的技术方案转化为客户能听懂的业务价值。专注于大客户攻坚、渠道体系搭建与技术销售转化。
+                        </p>
+                        
+                        <div className="flex gap-4 pt-4">
+                        <button 
+                            onClick={() => scrollTo('services', '服务范围')}
+                            className="bg-[#1a2356] text-white px-8 py-4 rounded-2xl font-bold border-2 border-[#1a2356] hover:-translate-y-1 hover:shadow-[4px_4px_0_rgba(26,35,86,1)] transition-all active:translate-y-0 active:shadow-none flex items-center gap-2"
+                        >
+                            <Mail size={18}/> 商务洽谈
+                        </button>
+                        <button 
+                            onClick={() => scrollTo('projects', '精选案例')}
+                            className="bg-transparent text-[#1a2356] px-8 py-4 rounded-2xl font-bold border-2 border-[#1a2356] hover:bg-gray-50 transition-colors flex items-center gap-2"
+                        >
+                            <TerminalSquare size={18}/> 获取方案
+                        </button>
+                        </div>
+                    </div>
+
+                    {/* 右侧互动头像卡片 */}
+                    <div className="relative flex justify-center lg:justify-end pr-4 perspective-1000">
+                        
+                        {/* 装饰性背景 */}
+                        <div className="absolute inset-0 flex items-center justify-center">
+                        <div className="w-80 h-80 border-2 border-dashed border-gray-300 rounded-full animate-spin-slow"></div>
+                        </div>
+
+                        <motion.div 
+                        whileHover={{ rotateY: -10, rotateX: 5, scale: 1.02 }}
+                        transition={{ type: "spring", stiffness: 200, damping: 20 }}
+                        className="bg-[#f5b225] border-[4px] border-[#1a2356] rounded-[32px] aspect-square w-full max-w-[420px] shadow-[16px_16px_0_rgba(26,35,86,1)] relative overflow-hidden flex items-end justify-center z-10 group"
+                        >
+                        <div className="w-[70%] h-[80%] bg-[#2a2a2a] rounded-t-full relative border-t-4 border-x-4 border-[#1a2356]">
+                            <div className="absolute top-[30%] left-1/2 -translate-x-1/2 -translate-y-1/2 w-[60%] h-[50%] bg-[#ffdbac] rounded-[40%] border-4 border-[#1a2356]"></div>
+                        </div>
+                        
+                        {/* 悬停光泽效果 */}
+                        <div className="absolute inset-0 bg-gradient-to-tr from-white/0 via-white/20 to-white/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
+                        </motion.div>
+
+                        {/* 浮动数据徽章 1：经验 */}
+                        <motion.div 
+                        animate={{ y: [0, -15, 0] }}
+                        transition={{ repeat: Infinity, duration: 4, ease: "easeInOut" }}
+                        className="absolute bottom-12 -left-4 bg-white border-[3px] border-[#1a2356] px-4 py-3 rounded-2xl shadow-[4px_4px_0_rgba(26,35,86,1)] z-20 flex items-center gap-3"
+                        >
+                        <div className="bg-blue-100 text-blue-600 p-2 rounded-lg"><Briefcase size={20}/></div>
+                        <div>
+                            <div className="font-black text-xl text-[#1a2356]">8+</div>
+                            <div className="text-xs font-bold text-gray-500">年行业经验</div>
+                        </div>
+                        </motion.div>
+
+                        {/* 浮动数据徽章 2：项目营收 */}
+                        <motion.div 
+                        animate={{ y: [0, 10, 0], x: [0, -5, 0] }}
+                        transition={{ repeat: Infinity, duration: 5, delay: 1, ease: "easeInOut" }}
+                        className="absolute top-20 -left-8 bg-white border-[3px] border-[#1a2356] px-4 py-3 rounded-2xl shadow-[4px_4px_0_rgba(26,35,86,1)] z-20 flex items-center gap-3"
+                        >
+                        <div className="bg-green-100 text-green-600 p-2 rounded-lg"><TrendingUp size={20}/></div>
+                        <div>
+                            <div className="font-black text-xl text-[#1a2356]">200M+</div>
+                            <div className="text-xs font-bold text-gray-500">年度营收贡献</div>
+                        </div>
+                        </motion.div>
+
+                        {/* 浮动数据徽章 3：转化率 */}
+                        <motion.div 
+                        animate={{ y: [0, -10, 0], x: [0, 5, 0] }}
+                        transition={{ repeat: Infinity, duration: 3.5, delay: 0.5, ease: "easeInOut" }}
+                        className="absolute top-1/2 -right-6 translate-x-4 bg-white border-[3px] border-[#1a2356] px-4 py-3 rounded-2xl shadow-[4px_4px_0_rgba(26,35,86,1)] z-20 flex items-center gap-3"
+                        >
+                        <div className="bg-yellow-100 text-yellow-600 p-2 rounded-lg"><CheckCircle2 size={20}/></div>
+                        <div>
+                            <div className="font-black text-xl text-[#1a2356]">85%</div>
+                            <div className="text-xs font-bold text-gray-500">大客户打单胜率</div>
+                        </div>
+                        </motion.div>
+
+                    </div>
+                    </section>
+
+                    {}
+                    {/* 工作经验 Section - 可点击 */}
+                    <section id="experience" className="bg-[#1a2356] rounded-[40px] p-12 text-white mb-32 relative overflow-hidden scroll-mt-32">
+                    <div className="grid lg:grid-cols-3 gap-12 relative z-10">
+                        <div>
+                        <h2 className="text-5xl font-black mb-6">职业 <span className="text-blue-400">履历</span></h2>
+                        <p className="text-blue-100 opacity-80 mb-8 leading-relaxed">
+                            从技术研发转型商务开拓，我擅长在复杂的技术场景中精准捕捉商业机会。
+                        </p>
+                        <button className="px-6 py-3 bg-white text-[#1a2356] font-bold rounded-xl flex items-center gap-2 hover:bg-blue-50 transition-colors">
+                            <Download size={18} /> 下载简历
+                        </button>
+
+                        {/* 滚动触发：核心技能矩阵 */}
+                        <div className="mt-16 space-y-6">
+                            <h3 className="text-xl font-bold mb-6 flex items-center gap-2">
+                            <Target size={20} className="text-blue-400"/> 核心技能矩阵
+                            </h3>
+                            {[
+                            { name: '大客户开拓与销售', percent: 95 },
+                            { name: '渠道生态体系搭建', percent: 90 },
+                            { name: '复杂解决方案架构', percent: 85 },
+                            { name: '售前技术团队协同', percent: 80 }
+                            ].map((skill, idx) => (
+                            <div key={idx} className="group">
+                                <div className="flex justify-between mb-2">
+                                <span className="text-sm font-bold text-blue-100 group-hover:text-white transition-colors">{skill.name}</span>
+                                <span className="text-sm font-bold text-blue-400">{skill.percent}%</span>
+                                </div>
+                                {/* 技能条槽 */}
+                                <div className="h-2.5 w-full bg-[#0a1236] rounded-full overflow-hidden border border-blue-900/50">
+                                {/* 技能条填充 (基于 Framer Motion 的 whileInView) */}
+                                <motion.div
+                                    initial={{ width: 0 }}
+                                    whileInView={{ width: `${skill.percent}%` }}
+                                    viewport={{ once: true, margin: "-50px" }}
+                                    transition={{ duration: 1.2, delay: idx * 0.15, ease: "easeOut" }}
+                                    className="h-full bg-gradient-to-r from-blue-600 to-blue-400 rounded-full relative"
+                                >
+                                    <div className="absolute top-0 right-0 bottom-0 w-4 bg-white/20" />
+                                </motion.div>
+                                </div>
+                            </div>
+                            ))}
+                        </div>
+                        </div>
+                        <div className="lg:col-span-2 space-y-6">
+                        {experienceData.map((exp, i) => (
+                            <motion.div 
+                            key={exp.id} 
+                            whileHover={{ scale: 1.02 }}
+                            whileTap={{ scale: 0.98 }}
+                            onClick={() => {
+                                window.scrollTo(0,0);
+                                setView({ type: 'experience-detail', id: exp.id });
+                            }}
+                            className="bg-white/10 backdrop-blur-md border-2 border-white/20 p-6 rounded-2xl hover:bg-white/15 transition-colors cursor-pointer group"
+                            >
+                            <div className="flex justify-between items-start mb-2">
+                                <span className="text-blue-400 font-bold text-sm">{exp.year}</span>
+                                <div className="flex items-center gap-3">
+                                <span className="text-xs font-bold bg-white/10 px-2 py-1 rounded-md opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1">查看详情 <ChevronRight size={12}/></span>
+                                <div className="bg-blue-500/20 p-2 rounded-lg text-blue-400 group-hover:bg-blue-500 group-hover:text-white transition-colors">{exp.icon}</div>
+                                </div>
+                            </div>
+                            <h3 className="text-xl font-bold mb-2 group-hover:text-blue-200 transition-colors">{exp.role}</h3>
+                            <p className="text-sm text-blue-100/70">{exp.desc}</p>
+                            </motion.div>
+                        ))}
+                        </div>
+                    </div>
+                    </section>
+
+                    {}
+                    {/* 精选案例 Section */}
+                    <section id="projects" className="mb-32 scroll-mt-32">
+                    <div className="flex justify-between items-end mb-12">
+                        <div>
+                        <h2 className="text-4xl font-black text-[#1a2356] mb-2">精选案例 <span className="text-blue-500">PROJECTS</span></h2>
+                        <p className="text-gray-500 font-bold">成功交付的大型行业解决方案</p>
+                        </div>
+                        <button className="hidden md:flex font-bold text-[#1a2356] hover:text-blue-500 items-center gap-1 border-b-2 border-transparent hover:border-blue-500 transition-all pb-1">
+                        查看全部案例 <ArrowRight size={18}/>
+                        </button>
+                    </div>
+
+                    <div className="grid md:grid-cols-2 gap-8">
+                        {projectsData.map((project) => (
+                        <motion.div 
+                            key={project.id}
+                            whileHover={{ y: -8 }}
+                            whileTap={{ scale: 0.98 }}
+                            onClick={() => {
+                            window.scrollTo(0,0);
+                            setView({ type: 'project-detail', id: project.id });
+                            }}
+                            className={`cursor-pointer border-4 border-[#1a2356] rounded-3xl p-8 h-80 flex flex-col justify-between shadow-[8px_8px_0_rgba(26,35,86,1)] hover:shadow-[12px_12px_0_rgba(26,35,86,1)] transition-all group relative overflow-hidden bg-white`}
+                        >
+                            {/* 卡片背景装饰块 */}
+                            <div className={`absolute top-0 right-0 w-40 h-40 ${project.bg} opacity-10 rounded-bl-full transform translate-x-10 -translate-y-10 group-hover:scale-150 transition-transform duration-700`}/>
+                            
+                            <div className="relative z-10">
+                            <span className={`inline-block px-3 py-1 rounded-full text-white text-xs font-bold mb-4 ${project.bg}`}>
+                                {project.category}
+                            </span>
+                            <h3 className="text-2xl font-black text-[#1a2356] leading-tight mb-2 group-hover:text-blue-600 transition-colors">
+                                {project.title}
+                            </h3>
+                            <p className="text-gray-600 text-sm">
+                                {project.brief}
+                            </p>
+                            </div>
+
+                            <div className="flex justify-between items-center relative z-10 border-t-2 border-gray-100 pt-4 mt-4">
+                            <span className="text-sm font-bold text-[#1a2356]">查看方案细节</span>
+                            <div className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center group-hover:bg-[#1a2356] group-hover:text-white transition-colors">
+                                <ArrowRight size={20} className="-rotate-45 group-hover:rotate-0 transition-transform"/>
+                            </div>
+                            </div>
+                        </motion.div>
+                        ))}
+                    </div>
+                    </section>
+
+                    {}
+                    {/* 服务范围 */}
+                    <section id="services" className="mb-20 scroll-mt-32">
+                    <div className="text-center mb-16">
+                        <h2 className="text-4xl font-black text-[#1a2356] mb-4">我的核心 <span className="text-blue-500">业务能力</span></h2>
+                        <p className="text-gray-500 font-bold">不仅懂技术，更懂如何把技术变成能落地的生意。</p>
+                    </div>
+
+                    <div className="grid md:grid-cols-3 gap-6">
+                        <div className="bg-white border-[3px] border-[#1a2356] rounded-2xl p-8 hover:-translate-y-2 transition-transform shadow-[4px_4px_0_rgba(26,35,86,1)]">
+                        <div className="text-4xl mb-4">🎯</div>
+                        <h3 className="text-xl font-bold mb-3">解决方案定制</h3>
+                        <p className="text-gray-600 text-sm leading-relaxed">基于客户痛点，主导架构设计与 POC 演示，将技术语言翻译为商业价值，提升大单赢率。</p>
+                        </div>
+                        <div className="bg-white border-[3px] border-[#1a2356] rounded-2xl p-8 hover:-translate-y-2 transition-transform shadow-[4px_4px_0_rgba(26,35,86,1)]">
+                        <div className="text-4xl mb-4">🤝</div>
+                        <h3 className="text-xl font-bold mb-3">渠道生态建设</h3>
+                        <p className="text-gray-600 text-sm leading-relaxed">建立分级代理商体系，制定激励与考核策略，协调原厂资源支持核心渠道打单。</p>
+                        </div>
+                        
+                        {/* CTA Card */}
+                        <div className="bg-blue-500 text-white border-[3px] border-blue-600 rounded-2xl p-8 flex flex-col justify-center items-center text-center hover:-translate-y-2 transition-transform shadow-[4px_4px_0_rgba(0,100,200,1)]">
+                        <div className="text-4xl mb-4">✉️</div>
+                        <h3 className="text-2xl font-black mb-2">获取合作</h3>
+                        <p className="text-blue-100 text-sm mb-6">需要高级方案支持或渠道规划？</p>
+                        <a href="mailto:hello@example.com" className="w-full bg-white text-blue-600 font-bold py-3 rounded-xl hover:scale-105 transition-transform active:scale-95 block text-center">
+                            商务对接
+                        </a>
+                        </div>
+                    </div>
+                    </section>
+                </motion.main>
+                )}
+                
+                {/* 动态详情页渲染逻辑 */}
+                {view.type === 'project-detail' && (
+                <ProjectDetailView 
+                    key="project-detail"
+                    projectId={view.id} 
+                    onBack={() => setView({ type: 'home', id: null })} 
+                />
+                )}
+                {view.type === 'experience-detail' && (
+                <ExperienceDetailView 
+                    key="experience-detail"
+                    expId={view.id} 
+                    onBack={() => setView({ type: 'home', id: null })} 
+                />
+                )}
+            </AnimatePresence>
+
+            {/* 滚动进度环 & 回到顶部按钮 */}
+            <AnimatePresence>
+                {isScrolled && (
+                <motion.button
+                    initial={{ opacity: 0, scale: 0.5, y: 20 }}
+                    animate={{ opacity: 1, scale: 1, y: 0 }}
+                    exit={{ opacity: 0, scale: 0.5, y: 20 }}
+                    onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+                    className="fixed bottom-8 right-8 z-50 w-14 h-14 flex items-center justify-center bg-white rounded-full shadow-[4px_4px_0_rgba(26,35,86,1)] border-[3px] border-[#1a2356] hover:-translate-y-1 active:translate-y-0 active:shadow-none transition-all group overflow-hidden"
+                >
+                    {/* SVG 进度圆环 */}
+                    <svg className="absolute inset-0 w-full h-full -rotate-90 rounded-full" viewBox="0 0 100 100">
+                    <circle cx="50" cy="50" r="44" fill="none" stroke="#eef2f6" strokeWidth="6" />
+                    <circle
+                        cx="50" cy="50" r="44" fill="none" stroke="#0088ff" strokeWidth="6"
+                        strokeDasharray="276.46" /* 2 * PI * 44 */
+                        strokeDashoffset={276.46 - (276.46 * scrollProgress) / 100}
+                        strokeLinecap="round"
+                        className="transition-all duration-150 ease-out"
+                    />
+                    </svg>
+                    <ArrowUp size={24} className="text-[#1a2356] group-hover:text-blue-500 transition-colors z-10" />
+                </motion.button>
+                )}
+            </AnimatePresence>
+            </div>
+        );
+        }
+
+        // ------------------ 渲染控制 ------------------
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+
+        // 代码执行完毕后，淡出并移除加载动画
+        const loader = document.getElementById('loading-screen');
+        if (loader) {
+            loader.style.opacity = '0';
+            setTimeout(() => loader.remove(), 500);
+        }
+    </script>
+</body>
+</html>
